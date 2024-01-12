@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+package-lock.json
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+lib/
+bin/
+dist/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
