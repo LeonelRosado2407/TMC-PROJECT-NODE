@@ -2,11 +2,13 @@ const { log } = require('console');
 const { once } = require('events');
 const express = require('express');
 const mongoose = require('mongoose');
+var cors = require('cors');
 
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const port = 3000;
 
 
@@ -26,14 +28,8 @@ const UsuarioSchema = mongoose.Schema({
     age : Number,
 })
 
-const AlumnosSchema = mongoose.Schema({
-    alumno : String,
-    salon : String,
-    sexo : String
-});
-
+//Definimos el modelo
 const Usuario = mongoose.model("Usuario",UsuarioSchema);
-const Alumnos = mongoose.model("Escuela",AlumnosSchema);
 
 app.get("/", (req,res) => {
     res.send("Bienvenido a mi Servidor Web estoy aprendiendo xd");
@@ -51,15 +47,38 @@ app.get("/getUsuarios", async (req,res)=>{
     }
 });
 
-app.get("/getAlumnos", async (req,res)=>{
+app.post('/agregarUsuario',async (req,res)=>{
     try {
-        const alumnos = await Alumnos.find();
-        res.json(alumnos); 
+        const nuevoUsuario = new Usuario(req.body);
+        await nuevoUsuario.save();
+        res.status(201).json(nuevoUsuario);
     } catch (error) {
-        console.error("Error al obtener los usuarios: " + error);
-        res.status(500).json({
-            error: "Error interno del servidor"
-        });
+        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error al crear un nuevo usuario:', error);
+    }
+});
+
+app.put("/actualizarUsuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.json(usuarioActualizado);
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al actualizar usuario:", error);
+  }
+});
+
+app.delete("/eliminarUsuario/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Usuario.findByIdAndDelete(id);
+        res.json({ message: "Usuario eliminado" });
+    } catch (error) {
+        res.status(500).json({ error: "Error interno del servidor" });
+        console.error("Error al eliminar usuario:", error);
     }
 });
 
