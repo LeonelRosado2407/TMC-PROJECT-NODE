@@ -11,6 +11,8 @@
   },
   "scripts": {
     "mongo": "nodemon mongoServer.js",
-    "serve": "nodemon server.js"
+    "serve": "nodemon server.js",
+    "panel": "nodemon PanelAlumno.js"
+
   }
 }

@@ -47,6 +47,19 @@ app.get("/getUsuarios", async (req,res)=>{
     }
 });
 
+app.get("/findUser/:id",async (req,res)=>{
+    try {
+        const { id } = req.params;
+        const usuario = await Usuario.findById(id);
+        res.json(usuario);
+    } catch (error) {
+        console.error("Error al obtener los usuarios: " + error);
+        res.status(500).json({
+            error: "Error interno del servidor"
+        });
+    }
+})
+
 app.post('/agregarUsuario',async (req,res)=>{
     try {
         const nuevoUsuario = new Usuario(req.body);
